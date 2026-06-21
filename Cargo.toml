@@ -1,0 +1,16 @@
+[package]
+name = "mirl_terminal"
+version = "0.0.0-alpha"
+edition = "2024"
+repository.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+mirl_core = { version = "0.0.0-alpha" }
+mirl_graphics = { version = "0.0.0-alpha" }
+
+[lints]
+workspace = true
+[build-dependencies]
+mirl_build_tools = { workspace = true }
