@@ -7,10 +7,10 @@ license.workspace = true
 authors.workspace = true
 
 [dependencies]
-mirl_core = { version = "0.0.0-alpha" }
+# mirl_core = { version = "0.0.0-alpha" }
 mirl_graphics = { version = "0.0.0-alpha" }
+[build-dependencies]
+mirl_build_tools = { workspace = true }
 
 [lints]
 workspace = true
-[build-dependencies]
-mirl_build_tools = { workspace = true }
