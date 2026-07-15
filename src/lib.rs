@@ -1,9 +1,8 @@
 //! A library for a better time interacting with the console/terminal
-//! 
+//!
 //! This lib is a big WIP. A lot will be ported over from the python lib TGE.
 //!
 //! This file is terrible, more TGE lib functions need to be ported over
-
 
 use std::io::{
     //stdout,
