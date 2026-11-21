@@ -15,18 +15,19 @@ use mirl_graphics::u32_color_casting::ColorManipulationWithoutInput;
 // use crossterm::ExecutableCommand;
 // use crate::graphics::{ColorManipulation, Pixel};
 
-// /// Clears the currently visible console
-// ///
-// /// # Errors
-// /// Idk, this functions needs to be rewritten
-// pub fn clear_console() -> std::io::Result<()> {
-//     stdout()
-//         .execute(crossterm::terminal::Clear(
-//             crossterm::terminal::ClearType::All,
-//         ))?
-//         .execute(crossterm::cursor::MoveTo(0, 0))?;
-//     Ok(())
-// }
+/// Clears the currently visible console
+///
+/// # Errors
+/// Idk, this functions needs to be rewritten
+pub fn clear_console() -> std::io::Result<()> {
+    //
+    crossterm::execute!(
+        std::io::stdout(),
+        crossterm::terminal::Clear(crossterm::terminal::ClearType::All,),
+        crossterm::cursor::MoveTo(0, 0)
+    )?;
+    Ok(())
+}
 // /// Moves the cursor to the top
 // /// # Errors
 // /// Idk, this functions needs to be rewritten
@@ -59,36 +60,57 @@ pub fn color<T: core::fmt::Display>(msg: &str, r1: T, g1: T, b1: T, r2: T, g2: T
 pub fn reset_color() -> String {
     "\x1b[0m".to_string()
 }
-/// Clear X lines
-///
+// /// Clear X lines
+// ///
+// /// # Errors
+// /// When it cannot write to the console it errors
+// pub fn clear_lines(n: usize) -> std::io::Result<()> {
+//     let mut stdout = std::io::stdout();
+
+//     for _ in 0..n {
+//         // Move cursor up one line
+//         write!(stdout, "\x1B[1A")?;
+//         // Clear the entire line
+//         write!(stdout, "\x1B[2K")?;
+//     }
+
+//     // Ensure the commands are flushed to the terminal
+//     stdout.flush()?;
+//     Ok(())
+// }
+
+// pub fn clear_console
+
+/// Clear X amount of lines
 /// # Errors
 /// When it cannot write to the console it errors
-pub fn clear_lines(n: usize) -> std::io::Result<()> {
-    let mut stdout = std::io::stdout();
-
-    for _ in 0..n {
-        // Move cursor up one line
-        write!(stdout, "\x1B[1A")?;
-        // Clear the entire line
-        write!(stdout, "\x1B[2K")?;
+pub fn clear_lines(lines_to_clear: u16) -> std::io::Result<()> {
+    if lines_to_clear == 0 {
+        return Ok(());
     }
 
-    // Ensure the commands are flushed to the terminal
-    stdout.flush()?;
-    Ok(())
+    crossterm::execute!(
+        std::io::stdout(),
+        crossterm::cursor::MoveUp(lines_to_clear),
+        crossterm::cursor::MoveToColumn(0),
+        crossterm::terminal::Clear(crossterm::terminal::ClearType::FromCursorDown),
+    )
 }
 
 /// A python like input function
 ///
 /// # Errors
 /// When it cannot read the console it will error
-pub fn input(msg: &str) -> std::io::Result<String> {
-    let mut input = String::new();
-    println!("{msg}");
-    std::io::stdin().read_line(&mut input)?;
-    input.truncate(input.len() - 1);
-    Ok(input)
+pub fn input<T: AsRef<str>>(prompt: T) -> std::io::Result<String> {
+    print!("{}", prompt.as_ref());
+
+    std::io::stdout().flush()?;
+
+    let mut buffer = String::new();
+    std::io::stdin().read_line(&mut buffer)?;
+    Ok(buffer.trim_end().to_string())
 }
+
 #[must_use]
 /// Get the (full) content of the console
 pub fn get_console_content(max_lines: usize) -> Vec<String> {

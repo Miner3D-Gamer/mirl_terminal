@@ -2,15 +2,21 @@
 name = "mirl_terminal"
 version = "0.0.0-alpha"
 edition = "2024"
-repository.workspace = true
+repository = "https://github.com/Miner3D-Gamer/mirl_terminal"
 license.workspace = true
 authors.workspace = true
+rust-version.workspace = true
+maintenance.workspace = true
 
 [dependencies]
 # mirl_core = { version = "0.0.0-alpha" }
 mirl_graphics = { version = "0.0.0-alpha" }
+
+crossterm = "0.29.0"
+
+
 [build-dependencies]
-mirl_build_tools = { workspace = true }
+mirl_build_tools = { version = "0.0.0-alpha" }
 
 [lints]
 workspace = true
