@@ -111,6 +111,26 @@ pub fn input<T: AsRef<str>>(prompt: T) -> std::io::Result<String> {
     Ok(buffer.trim_end().to_string())
 }
 
+/// Request the input of the user until a condition is reached
+///
+/// # Errors
+/// When it cannot read the console it will error
+pub fn input_until<T: AsRef<str>, F: Fn(String) -> Result<String, String>>(
+    prompt: T,
+    condition: F,
+) -> std::io::Result<String> {
+    loop {
+        let input = input(&prompt)?;
+        match condition(input) {
+            Ok(val) => return Ok(val),
+            Err(message) => {
+                clear_lines(2)?;
+                println!("{message}");
+            }
+        }
+    }
+}
+
 #[must_use]
 /// Get the (full) content of the console
 pub fn get_console_content(max_lines: usize) -> Vec<String> {
